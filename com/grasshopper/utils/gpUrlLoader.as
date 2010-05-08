@@ -50,7 +50,7 @@ package com.grasshopper.utils {
 			
 		}
 		
-		public function init(url:String, lType:String, nX = null):void {
+		public function init(url:String, lType:String):void {
 			loadType = lType;
 			urlLoader = new URLLoader();
 			if ((lType == 'image') || (lType == 'swf')) {
@@ -66,12 +66,19 @@ package com.grasshopper.utils {
 				snd.addEventListener(Event.OPEN, onOpen);
 				snd.addEventListener(ProgressEvent.PROGRESS, onProgress);
 				snd.load(new URLRequest(url));
+			} else if ((lType == 'image') || (lType == 'swf')) {
+				loader = new Loader();
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComplete);
+				loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
+				loader.contentLoaderInfo.addEventListener(Event.OPEN, onOpen);
+				loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onProgress);
+				loader.load(new URLRequest(url));
 			} else {
-				urlLoader.load(new URLRequest(url));
 				urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onError);
 				urlLoader.addEventListener(Event.OPEN, onOpen);
 				urlLoader.addEventListener(Event.COMPLETE, onComplete);
 				urlLoader.addEventListener(ProgressEvent.PROGRESS, onProgress);
+				urlLoader.load(new URLRequest(url));
 			}
 		}
 		
@@ -79,14 +86,15 @@ package com.grasshopper.utils {
 			dispatchEvent(new Event(Event.OPEN));
 		}
 		
-		private function onProgress(e:Event):void {
-			dispatchEvent(new Event(ProgressEvent.PROGRESS));
+		private function onProgress(event:ProgressEvent):void {
+			dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS));
 		}
 		
 		private function onComplete(e:Event):void {
 			if ((loadType == 'image') ||(loadType == 'swf')) {
-				loader = new Loader();
-				loader.loadBytes(urlLoader.data);
+				//loader = new Loader();
+				//loader.loadBytes(urlLoader.data);
+				//trace(loader.width);
 			} else if (loadType == 'text') {
 				txt = e.target.data as String;
 			} else if (loadType == 'xml') {

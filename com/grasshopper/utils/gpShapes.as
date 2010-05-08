@@ -71,6 +71,7 @@ package com.grasshopper.utils {
 					graphics.moveTo(0, 0);
 				} else {
 					graphics.moveTo(_nW/2, 0);
+					//graphics.moveTo(0, nH/2);
 				}
 			} else if (_corners.length == 4) {
 				graphics.moveTo(_corners[0], 0);
@@ -170,16 +171,27 @@ package com.grasshopper.utils {
 		}
 		
 		public function drawCircle():Boolean {
+			/*graphics.curveTo(_nW, 0, _nW, nH/2);
+            graphics.curveTo(_nW, nH, _nW/2, nH);
+            graphics.curveTo(0, nH, 0, nH/2);
+            graphics.curveTo(0, 0, _nW/2, 0);*/
 			graphics.drawCircle(0, 0, _nW/2);
 			return true;
 		}
 		
 		private function drawEllipse():Boolean {
+			/*graphics.curveTo(nW, 0, nW, nH/2);
+            graphics.curveTo(nW, nH, nW/2, nH);
+            graphics.curveTo(0, nH, 0, nH/2);
+            graphics.curveTo(0, 0, nW/2, 0);*/
 			graphics.drawEllipse(0, 0, _nW, _nH);
 			return true;
 		}
 		
 		private function drawHalfCircle():Boolean {
+			/*graphics.curveTo(nW, 0, nW, nH/2);
+            graphics.lineTo(0, nH/2);
+            graphics.curveTo(0, 0, nW/2, 0);*/
 			graphics.curveTo(_nW, 0, _nW, _nH/2);
             graphics.curveTo(_nW, _nH, _nW/2, _nH);
 			return true;
@@ -232,5 +244,10 @@ package com.grasshopper.utils {
 		public function getXY():Array {
 			return new Array(this.x, this.y);
 		}
+		//
+		//private function animateOver():Void {
+			//var recTween:Tween = new Tween(this, "_width", Strong.easeOut, 0 , _nWidth, 3, true);
+		//}
+		//
 	}
 }

@@ -28,7 +28,7 @@ package com.grasshopper.ui {
     import flash.text.TextFieldAutoSize;
 
 	import com.grasshopper.utils.gpShapes;
-	import com.grasshopper.utils.gpGlobalUtils;
+	import com.grasshopper.ui.gpTextField;
 	
 	public class gpButton extends gpShapes {
 		private var _xBtn:XMLList;
@@ -64,10 +64,11 @@ package com.grasshopper.ui {
 			}
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
 		
 		private function createCaption():void {
-			_tBtnLabel = gpGlobalUtils.getTextField(_xBtn.@tProperties);
+			_tBtnLabel = gpTextField.createTextField(_xBtn.@tProperties);
 			_tBtnLabel.text = _sBtnText;
 			var a:Array = getXY();
 			_tBtnLabel.width = _xBtn.@nW;
@@ -77,7 +78,7 @@ package com.grasshopper.ui {
 			_tBtnLabel.x = lx;
 			_tBtnLabel.y = ly;
 			if (_xBtn.attribute('tFormat').toString()) {
-				_text_format = gpGlobalUtils.getTextFormat(_xBtn.@tFormat);
+				_text_format = gpTextField.getTextFormat(_xBtn.@tFormat);
 				_text_format.color = _xBtn.@fontColor;
 				_tBtnLabel.setTextFormat(_text_format);
 			}
@@ -86,36 +87,76 @@ package com.grasshopper.ui {
 		
 		//
 		private function onMouseOver(event:MouseEvent):void {
-			var a:Array = getXY();
 			_xBtn.@bgColor = _xBtn.@bgColorHover;
 			_xBtn.@borderColor = _xBtn.@borderColorHover;
-			_xBtn.@nX = a[0];
-			_xBtn.@nY = a[1];
-			graphics.clear();
-			createShape(_xBtn);
-			if (_sBtnText != "") {
-				if (_xBtn.attribute('tFormat').toString()) {
-					_text_format.color = _xBtn.@fontColorHover;
-					_tBtnLabel.setTextFormat(_text_format);
-				}
-			}
+			recreateShape();
+			ifText('over');
 			//this.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER));
 		}
+		
 		private function onMouseOut(event:MouseEvent):void {
-			var a:Array = getXY();
+			// unselect is same as mouse out. 
+			// changes button back to original state
+			doUnSelected();
+			//this.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT));
+		}
+		
+		private function onMouseClick(event:MouseEvent):void {
+			doSelected();
+		}
+		
+		public function doSelected():void {
+			if (_xBtn.attribute('bgColorSelected').toString()) {
+				_xBtn.@bgColor = _xBtn.@bgColorSelected;
+			}
+			if (_xBtn.attribute('borderColorSelected').toString()) {
+				_xBtn.@borderColor = _xBtn.@borderColorSelected;
+			}
+			if ((_xBtn.attribute('bgColorSelected').toString()) || (_xBtn.attribute('borderColorSelected').toString())) {
+				recreateShape();
+			}
+			ifText('selected');
+			//this.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER));
+		}
+		
+		public function doUnSelected():void {
 			_xBtn.@bgColor = _bgColor;
 			_xBtn.@borderColor = _borderColor;
+			recreateShape();
+			ifText('out');
+		}
+		
+		private function recreateShape():void {
+			var a:Array = getXY();
 			_xBtn.@nX = a[0];
 			_xBtn.@nY = a[1];
 			graphics.clear();
 			createShape(_xBtn);
+		}
+		
+		private function ifText(mouseType:String):void {
 			if (_sBtnText != "") {
+				var clr:Number = getFontColor(mouseType);
 				if (_xBtn.attribute('tFormat').toString()) {
-					_text_format.color = _xBtn.@fontColor;
+					_text_format.color = clr;
 					_tBtnLabel.setTextFormat(_text_format);
+				} else {
+					_tBtnLabel.textColor = clr;
 				}
 			}
-			//this.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT));
+		}
+		
+		private function getFontColor(type:String):Number {
+			var rVal:Number = _xBtn.@fontColor;
+			switch(type) {
+                case "over":
+					rVal = _xBtn.@fontColorHover;
+					break;
+				case "selected":
+					rVal = (_xBtn.attribute('fontColorSelected').toString()) ? _xBtn.@fontColorSelected : _xBtn.@fontColor;
+					break;
+			}
+			return rVal;
 		}
 	}
 }
