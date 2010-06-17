@@ -1,26 +1,4 @@
-﻿/*
- * 	 gpUrlLoader - an AS3 Class
- * 	 @author Les Green
- * 	 Copyright (C) 2010 Intriguing Minds, Inc.
- *   Version 0.5
- * 
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   Demo and Documentation can be found at:   
- *   http://www.grasshopperpebbles.com
- *   
- */
-
-
-package com.grasshopper.utils {
+﻿package com.grasshopper.utils {
 	import flash.display.Sprite;
 	import flash.display.Loader;
 	import flash.text.StyleSheet;
@@ -29,6 +7,7 @@ package com.grasshopper.utils {
 	import flash.utils.ByteArray;
 	import flash.net.URLLoaderDataFormat;
 	import flash.events.*;
+	//import flash.events.IOErrorEvent;
 	import flash.media.Sound;
 	import flash.media.SoundLoaderContext;
 	import com.adobe.serialization.json.JSON;
@@ -71,6 +50,7 @@ package com.grasshopper.utils {
 				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComplete);
 				loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
 				loader.contentLoaderInfo.addEventListener(Event.OPEN, onOpen);
+				loader.contentLoaderInfo.addEventListener(Event.INIT, onInit);
 				loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onProgress);
 				loader.load(new URLRequest(url));
 			} else {
@@ -84,6 +64,10 @@ package com.grasshopper.utils {
 		
 		private function onOpen(e:Event):void {
 			dispatchEvent(new Event(Event.OPEN));
+		}
+		
+		private function onInit(e:Event):void {
+			dispatchEvent(new Event(Event.INIT));
 		}
 		
 		private function onProgress(event:ProgressEvent):void {
@@ -110,6 +94,26 @@ package com.grasshopper.utils {
 				//
 			} 
 			dispatchEvent(new Event(Event.COMPLETE));
+			//removeAllListeners(loadType);
+		}
+		
+		private function removeAllListeners(lType:String):void {
+			if (lType == 'sound') {
+				snd.removeEventListener(Event.COMPLETE, onComplete);
+				snd.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+				snd.removeEventListener(Event.OPEN, onOpen);
+				snd.removeEventListener(ProgressEvent.PROGRESS, onProgress);
+			} else if ((lType == 'image') || (lType == 'swf')) {
+				loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onComplete);
+				loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+				loader.contentLoaderInfo.removeEventListener(Event.OPEN, onOpen);
+				loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, onProgress);
+			} else {
+				urlLoader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+				urlLoader.removeEventListener(Event.OPEN, onOpen);
+				urlLoader.removeEventListener(Event.COMPLETE, onComplete);
+				urlLoader.removeEventListener(ProgressEvent.PROGRESS, onProgress);
+			}
 		}
 		
 		private function onError(e:ErrorEvent):void {
@@ -157,3 +161,14 @@ package com.grasshopper.utils {
 		}
 	}
 }
+
+/*import flash.events.EventDispatcher;
+import flash.events.Event;
+
+class CustomDispatcher extends EventDispatcher {
+    public static var LOADERROR:String = "error";
+
+    public function doError():void {
+        dispatchEvent(new Event(CustomDispatcher.LOADERROR));
+    }
+}*/

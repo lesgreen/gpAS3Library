@@ -1,25 +1,4 @@
-﻿/*
- * 	 gpTextField - an AS3 Class
- * 	 @author Les Green
- * 	 Copyright (C) 2010 Intriguing Minds, Inc.
- *   Version 0.5
- * 
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   Demo and Documentation can be found at:   
- *   http://www.grasshopperpebbles.com
- *   
- */
-
-package com.grasshopper.ui {
+﻿package com.grasshopper.ui {
 	import flash.display.Sprite;
     import flash.text.StyleSheet;
     import flash.text.TextField;
@@ -31,9 +10,15 @@ package com.grasshopper.ui {
     import flash.events.MouseEvent;
 
 	public class gpTextField {
-        		
-		public static function createTextField(f_attrib:String, tFormat='', sheet=''):TextField {
+        //private var field:TextField;
+        //private var textValue:String;
+       // private var sheet:StyleSheet;
 		
+		/*public function gpTextField() {
+			
+		}*/
+		
+		public static function createTextField(f_attrib:String, tFormat='', sheet=''):TextField {
 			var tF:TextField = new TextField();
 			var ob:Object = convertToObject(f_attrib);
 			for (var key:* in ob) {
@@ -44,8 +29,7 @@ package com.grasshopper.ui {
 				}
 			}
 			if (tFormat != '') {
-				var tFrmat:TextFormat = getTextFormat(tFormat);
-				tF.setTextFormat(tFrmat);
+				tF.defaultTextFormat = getTextFormat(tFormat);
 			}
 			if (sheet != '') {
 				tF.styleSheet = sheet;
@@ -55,14 +39,19 @@ package com.grasshopper.ui {
 		
 		public static function getTextFormat(f_attrib:String):TextFormat {
 			var tF:TextFormat = new TextFormat();
-			var ob:Object = convertToObject(f_attrib);
+			tF.font = 'Arial';
+			tF.bold = true;
+			tF.color = 0xFFFFFF;
+			//font:Arial,bold:true,align:center,color:0xFFFFFF
+			/*var ob:Object = convertToObject(f_attrib);
 			for (var key:* in ob) {
 				if (key == 'align') {
 					tF[key] = getTextAlign(ob[key]);
 				} else {
+					trace(ob[key]);
 					tF[key] = ob[key];
 				}
-			}
+			}*/
 			return tF;
 		}
 		
@@ -111,7 +100,7 @@ package com.grasshopper.ui {
 			return rVal;
 		}
 		
-		private static function convertToObject(t:String):Object {
+		protected static function convertToObject(t:String):Object {
 			var ob:Object = new Object();
 			var a:Array = t.split(",");
 			var nL:int = a.length;
