@@ -1,4 +1,23 @@
-﻿
+﻿/*
+ * 	 gpShapes - an AS3 Class
+ * 	 @author Les Green
+ * 	 Copyright (C) 2010 Intriguing Minds, Inc.
+ *   Version 0.5
+ * 
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   Demo and Documentation can be found at:   
+ *   http://www.grasshopperpebbles.com
+ *   
+ */
 /*
 drawPolygon method adapted from:
 http://www.flepstudio.org/forum/tutorials/990-drawing-polygons-actionscript-3-0-a.html
@@ -9,12 +28,10 @@ package com.grasshopper.utils {
 	import flash.display.*;
 	import flash.filters.DropShadowFilter;
 	import com.grasshopper.utils.gpColorSchemes;
-//import mx.transitions.*;
-//import mx.transitions.easing.*;
 
-//var shapeObj:Object = {shape_type: '', nX: '', nY: '', nW: '', nH: '', corners: '', fill_type: '', fill_color: '', fill_alphas: '', line_color: '', line_size: '', shadow_color: '', colorSchemeName: '', colorSchemeReverse: ''};
 	public class gpShapes extends Sprite {
 		private var _fill_colors:Array;
+		private var _matrix_rotation:Number;
 		private var _line_color:Number;
 		private var _line_size:Number;
 		private var _fill_alphas:Array;
@@ -48,7 +65,20 @@ package com.grasshopper.utils {
 				//var interpolationMethod:String = "linearRGB";
 				//var focalPointRatio:Number = .3;
 				var matrix = new Matrix();
-				matrix.createGradientBox(_nW, _nH, Math.PI/2, 0, 0);
+				if ((_shape_type == 'circle') || (_shape_type == 'polygon')) {
+					//matrix.createGradientBox(_nW*2,_nW*2,0,-_nW/2+(_nW/2),-_nW/2-(_nW/2));
+					//matrix.createGradientBox(_nW,_nW,0,-_nW/2+(_nW/2),-_nW/2-(_nW/2));
+					matrix.createGradientBox(_nW,_nW,_matrix_rotation,_nW/128,_nW/128);
+				} else if (_shape_type == 'halfCircle') {
+					if (_fill_type == GradientType.LINEAR) {
+						matrix.createGradientBox(_nW/2,_nW/2,_matrix_rotation,_nW/128,_nW/128);
+					} else {
+						matrix.createGradientBox(_nW,_nW,_matrix_rotation,-_nW/2, -_nW/2);
+					}
+				} else {
+					matrix.createGradientBox(_nW, _nH, _matrix_rotation, 0, 0);
+				}
+				
 				graphics.beginGradientFill(_fill_type, _fill_colors, _fill_alphas, _fill_ratios, matrix);
 			}
 			if (_line_size != 0) {
@@ -128,6 +158,12 @@ package com.grasshopper.utils {
 					_fill_type = GradientType.RADIAL;
 				}
 			} 
+			if (shape.fill_type == "radial") {
+				_matrix_rotation = 0;
+			} else {
+				_matrix_rotation = (shape.gradient_rotation) ? degreesToRadians(shape.gradient_rotation) : Math.PI/2;
+			}
+			
 			_corners = (shape.corners) ? shape.corners.split(",") : new Array('0');
 			if (shape.colorSchemeName) {
 				var c_rev:Boolean = (shape.colorSchemeReverse) ? true : false;
@@ -283,8 +319,8 @@ package com.grasshopper.utils {
 			var ratio:Number = 360/_segments;
 			var top:Number = centerY-radius;
 			for(var i:int=_rotate_amt;i<=360+_rotate_amt;i+=ratio) {
-				var xx:Number=centerX+Math.sin(radians(i))*radius;
-				var yy:Number=top+(radius-Math.cos(radians(i))*radius);
+				var xx:Number=centerX+Math.sin(degreesToRadians(i))*radius;
+				var yy:Number=top+(radius-Math.cos(degreesToRadians(i))*radius);
 				points[cnt]=new Array(xx,yy);
 				if(cnt>=1) {
 					//drawing(cnt, points[cnt-1][0],points[cnt-1][1],points[cnt][0],points[cnt][1]);
@@ -378,7 +414,7 @@ package com.grasshopper.utils {
 			graphics.clear();
 		}
 		
-		protected function radians(n:Number):Number	{
+		protected function degreesToRadians(n:Number):Number	{
 			return(Math.PI/180*n);
 		}
 	}

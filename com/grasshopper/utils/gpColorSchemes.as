@@ -1,4 +1,25 @@
-﻿package com.grasshopper.utils {
+﻿/*
+ * 	 gpColorSchemes - an AS3 Class
+ * 	 @author Les Green
+ * 	 Copyright (C) 2010 Intriguing Minds, Inc.
+ *   Version 0.5
+ * 
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   Demo and Documentation can be found at:   
+ *   http://www.grasshopperpebbles.com
+ *   
+ */
+
+package com.grasshopper.utils {
 	
 	public class gpColorSchemes {
 		private var colorScheme:Object;
@@ -6,15 +27,12 @@
 		private var reverse:Boolean;
 		
 		public function gpColorSchemes(c:String, r:Boolean = false) {
-			//return getColorScheme(colorName, reverse);
 			colorScheme = new Object();
 			colorName = c;
 			reverse = r;
 		}
 		public function getColorScheme():Object {
-			//var colorScheme:Object;
 			colorScheme.brdrSize = 1;
-			//flash resubale classes as3: http://www.actionscript.org/resources/articles/698/1/Make-your-own-reusable-classes-using-Flash-and-AS3/Page1.html
 			switch (colorName) {
 				case "gpGrey2" :
 					colorScheme.ratio = [0, 255];

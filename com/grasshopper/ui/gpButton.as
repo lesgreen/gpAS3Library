@@ -1,4 +1,25 @@
-﻿package com.grasshopper.ui {
+﻿/*
+ * 	 gpButton - an AS3 Class (extends gpShape)
+ * 	 @author Les Green
+ * 	 Copyright (C) 2010 Intriguing Minds, Inc.
+ *   Version 0.5
+ * 
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   Demo and Documentation can be found at:   
+ *   http://www.grasshopperpebbles.com
+ *   
+ */
+
+package com.grasshopper.ui {
 	
 	import flash.text.TextField;
 	import flash.events.*;
@@ -117,7 +138,6 @@
 			var a:Array = getXY();
 			_xBtn.nX = a[0];
 			_xBtn.nY = a[1];
-			//graphics.clear();
 			removeShape();
 			createShape(_xBtn);
 		}
